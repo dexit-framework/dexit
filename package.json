@@ -1,5 +1,5 @@
 {
-  "name": "dexio",
+  "name": "dexit",
   "version": "0.1.0",
   "description": "Declarative Extensible Framework for Integration Tests",
   "main": "index.js",
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jirihybek/dexio.git"
+    "url": "git+https://github.com/jirihybek/dexit.git"
   },
   "keywords": [
     "declarative",
@@ -22,7 +22,7 @@
   "author": "Jiri Hybek <jiri@hybek.cz>",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/jirihybek/dexio/issues"
+    "url": "https://github.com/jirihybek/dexit/issues"
   },
-  "homepage": "https://github.com/jirihybek/dexio#readme"
+  "homepage": "https://github.com/jirihybek/dexit#readme"
 }

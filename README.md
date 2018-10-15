@@ -1,12 +1,12 @@
-# dexio
+# dexit
 
-Declarative Extensible Framework for Integration Tests.
+Declarative Extensible Integration Testing framework.
 
 **--- In development ---**
 
 Goal of this project is to create a framework for running and writing integrations tests of various services in a declarative-fasion.
 
-The Dexio framework will provide modules to test various services such as APIs and databases. It will be possible to combine this modules in a single test.
+The Dexit framework will provide modules to test various services such as APIs and databases. It will be possible to combine this modules in a single test.
 
 ## Why?
 
@@ -45,6 +45,7 @@ params:
 tests:
   # ----------------------------------------------------------------
   - description: Try to log in with valid credentials
+  # ----------------------------------------------------------------
     tasks:
       - module: http.post
         url: ${apiPrefix}/login
@@ -88,6 +89,7 @@ tests:
 
   # ---------------------------------------------------------------- 
   - description: Try to log in with invalid credentials
+  # ----------------------------------------------------------------
     tasks:
       - module: postgresql.query
         query: "SELECT invalid_logins FROM `users` WHERE `username` = 'test'"
@@ -134,6 +136,7 @@ description: Tests the pub sub functionality
 tests:
   # ----------------------------------------------------------------
   - description: Try to publish message and check if was delivered into RabbitMQ
+  # ----------------------------------------------------------------
     tasks:
       - module: mqtt.publish
         id: mqtt-publish
@@ -153,6 +156,7 @@ tests:
 
   # ----------------------------------------------------------------
   - description: Try to subscribe for a message
+  # ----------------------------------------------------------------
     tasks:
       - module: rabbitmq.publish
         id: amq-publish
