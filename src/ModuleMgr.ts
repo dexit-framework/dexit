@@ -165,11 +165,25 @@ export class ModuleMgr {
 	}
 
 	/**
+	 * Loads and register module from file
+	 *
+	 * @param filename Module filename
+	 */
+	public load(filename: string) {
+
+		const mod = require(filename);
+
+		this.validateModuleObject(filename, mod);
+		this.register(mod);
+
+	}
+
+	/**
 	 * Tries to load Dexit module from Node.JS package
 	 *
 	 * @param path Module path
 	 */
-	protected tryLoadNodeModule(path: string) {
+	public loadNodeModule(path: string) {
 
 		try {
 
@@ -189,20 +203,6 @@ export class ModuleMgr {
 			throw new Error("Failed load module '" + path + "': " + String(err));
 
 		}
-
-	}
-
-	/**
-	 * Loads and register module from file
-	 *
-	 * @param filename Module filename
-	 */
-	public load(filename: string) {
-
-		const mod = require(filename);
-
-		this.validateModuleObject(filename, mod);
-		this.register(mod);
 
 	}
 
@@ -236,7 +236,7 @@ export class ModuleMgr {
 
 		// Load them all
 		for (let i = 0; i < moduleList.length; i++)
-			this.tryLoadNodeModule(moduleList[i]);
+			this.loadNodeModule(moduleList[i]);
 
 	}
 

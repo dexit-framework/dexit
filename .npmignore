@@ -1,0 +1,18 @@
+# TypeScript sources
+/src
+/tsconfig.json
+/tslint.json
+
+# Tests
+/__tests__
+/dist/__tests__
+
+# Built demo documentation
+/demo
+
+# Sandbox
+sandbox
+
+# System and env files
+.DS_Store
+.vscode

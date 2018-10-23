@@ -5,4 +5,20 @@
  * @license Apache-2.0
  */
 
-console.log("Hello world!");
+// Export core classes
+export * from "./Interfaces";
+export * from "./Loader";
+export * from "./ModuleMgr";
+export * from "./ReporterMgr";
+export * from "./Repository";
+export * from "./Runner";
+export * from "./Tools";
+
+// Export built-in reporters
+export * from "./reporters";
+
+// Export built-in modules
+export * from "./modules";
+
+// Export main class
+export * from "./Dexit";

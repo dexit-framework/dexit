@@ -75,7 +75,8 @@ export class Repository {
 			afterAllTasks: [],
 			tests: [],
 			children: {},
-			skip: false
+			skip: false,
+			testCount: 0
 		};
 
 	}
@@ -106,7 +107,8 @@ export class Repository {
 					afterAllTasks: [],
 					tests: [],
 					children: {},
-					skip: null
+					skip: null,
+					testCount: 0
 				};
 
 			parent = parent.children[path[i]];
@@ -365,9 +367,18 @@ export class Repository {
 
 		}
 
+		// Set test count
+		setEntry.testCount = setEntry.tests.length;
+
 		// Build children
-		for (const i in setEntry.children)
+		for (const i in setEntry.children) {
+
 			this.buildTestSet(setEntry, setEntry.children[i]);
+
+			// Add child test count
+			setEntry.testCount += setEntry.children[i].testCount;
+
+		}
 
 	}
 

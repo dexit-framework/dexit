@@ -2,7 +2,7 @@ name: simpleHttp
 description: Simple HTTP tests
 tags:
   - http
-skip: true
+skip: false
 params:
   test:
     allowedNames:

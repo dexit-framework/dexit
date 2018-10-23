@@ -64,7 +64,7 @@ tests:
         expect:
           rowCount: 1
         set:
-          invalid_logins: $.rows[0].invalid_logins
+          invalid_logins: ${rows[0].invalid_logins}
 
       - do: http.post
         args:
@@ -79,7 +79,7 @@ tests:
         args:
           url: ${apiPrefix}/user
           auth:
-            bearer: ${token}
+            bearer: someBadToken
         expect:
           code: 401
 

@@ -17,7 +17,7 @@ import {
 	IAssertionError
 } from "./Interfaces";
 
-import { ReporterMgr } from "./Reporter";
+import { ReporterMgr } from "./ReporterMgr";
 import { ModuleMgr } from "./ModuleMgr";
 
 import { resolveArgs, promiseWait, IPromiseWait, clone, formatHrtime } from "./Util";
@@ -373,12 +373,18 @@ export class Runner {
 
 				const childSet = testSet.children[j];
 
-				if (childSet.skip)
+				if (childSet.skip) {
+
 					this.reporterMgr.logTestSetSkip(testSet);
-				else
+					testSetReport.skippedCount += childSet.testCount;
+
+				} else {
+
 					childSetPromises.push(
 						this.runTestSet(childCtx, childSet)
 					);
+
+				}
 
 			}
 
@@ -441,12 +447,18 @@ export class Runner {
 
 		for (const k in testSets) {
 
-			if (testSets[k].skip)
+			if (testSets[k].skip) {
+
 				this.reporterMgr.logTestSetSkip(testSets[k]);
-			else
+				report.skippedCount += testSets[k].testCount;
+
+			} else {
+
 				testSetPromises.push(
 					this.runTestSet(defaultCtx, testSets[k])
 				);
+
+			}
 
 		}
 

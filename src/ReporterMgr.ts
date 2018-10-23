@@ -146,11 +146,28 @@ export class ReporterMgr implements IReporter {
 	}
 
 	/**
+	 * Loads and register reporter module from file
+	 *
+	 * @param filename Reporter filename
+	 * @param opts Reporter configuration options
+	 */
+	public load(filename: string, opts: { [K: string]: any }) {
+
+		const reporterClass = require(filename);
+		const reporter = new reporterClass(opts);
+
+		this.validateReporterObject(filename, reporter);
+		this.register(reporter);
+
+	}
+
+	/**
 	 * Tries to load Dexit reporter module from Node.JS package
 	 *
 	 * @param path Module path
+	 * @param opts Reporter configuration options
 	 */
-	protected tryLoadNodeModule(path: string) {
+	public loadNodeModule(path: string, opts: { [K: string]: any }) {
 
 		try {
 
@@ -163,61 +180,13 @@ export class ReporterMgr implements IReporter {
 			const main = path + "/" + (pkg.main || "index.js");
 
 			// Try to load module file
-			this.load(main);
+			this.load(main, opts);
 
 		} catch (err) {
 
 			throw new Error("Failed load reporter '" + path + "': " + String(err));
 
 		}
-
-	}
-
-	/**
-	 * Loads and register reporter module from file
-	 *
-	 * @param filename Reporter filename
-	 */
-	public load(filename: string) {
-
-		const reporter = require(filename);
-
-		this.validateReporterObject(filename, reporter);
-		this.register(reporter);
-
-	}
-
-	/**
-	 * Loads all dexit reporter NPM modules from specified path
-	 *
-	 * @param path Modules path
-	 */
-	public loadAllNodeModules(path: string = "./node_modules") {
-
-		const moduleList = [];
-
-		try {
-
-			const moduleFiles = readdirSync(path);
-
-			for (let i = 0; i < moduleFiles.length; i++) {
-
-				try {
-
-					const pkgPath = path + "/" + moduleFiles[i] + "/package.json";
-
-					if (statSync(pkgPath).isFile())
-						moduleList.push(path + "/" + moduleFiles[i]);
-
-				} catch { /* Pass */ }
-
-			}
-
-		} catch { /* Pass */ }
-
-		// Load them all
-		for (let i = 0; i < moduleList.length; i++)
-			this.tryLoadNodeModule(moduleList[i]);
 
 	}
 

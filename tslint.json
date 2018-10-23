@@ -25,7 +25,8 @@
         "variable-name": false,
         "callable-types": false,
         "forin": false,
-        "space-before-function-paren": false
+        "space-before-function-paren": false,
+        "no-var-requires": false
     },
     "rulesDirectory": []
 }

@@ -8,7 +8,7 @@
 import colors = require("colors");
 import { inspect, puts } from "util";
 
-import { IReporter } from "../Reporter";
+import { IReporter } from "../ReporterMgr";
 import {
 	IValidationError, IAssertionError,
 	ITestSetEntry, ITestEntry, ITestTask,
@@ -276,8 +276,7 @@ export class ConsoleReporter implements IReporter {
 		const msg = [
 			colors.red("Some of your test files failed to validate."),
 			docsMsg,
-			"",
-			"Please check your test files and ensure that all required modules are installed."
+			""
 		];
 
 		console.log(this.formatOutput(msg).join("\n"));

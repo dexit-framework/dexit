@@ -12,9 +12,14 @@ The Dexit framework will provide modules to test various services such as APIs a
 
 Because complex applications which consist of multiple services such as application servers, databases or brokers must be tested as a single system.
 
-## Planned Modules
+## Buil-in Modules
 
 - REST API (as HTTP)
+- JavaScript code execution
+- Shell commands execution
+
+## Planned Modules
+
 - MySQL
 - PostgreSQL
 - InfluxDB

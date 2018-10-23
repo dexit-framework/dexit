@@ -276,6 +276,7 @@ export interface ITestSetEntry {
 	tests: Array<ITestEntry>;
 	children: { [K: string]: ITestSetEntry };
 	skip: boolean;
+	testCount: number;
 }
 
 /**

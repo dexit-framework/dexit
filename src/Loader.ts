@@ -6,8 +6,10 @@
  */
 
 import { readFile, readdirSync, statSync } from "fs";
+import { resolve as resolvePath } from "path";
 import { loadAll as yamlLoadAll } from "js-yaml";
 import { ITestDocument } from "./Interfaces";
+import { TestsDirectoryNotFoundError } from "./Errors";
 
 /**
  * Loader is a class responsible for loading and parsing test files
@@ -24,7 +26,7 @@ export class Loader {
 	 */
 	protected resolveDirectory(basePath: string, relativePath: string, searchPattern: RegExp, ignorePattern: RegExp) {
 
-		const fullPath = basePath + "/" + relativePath;
+		const fullPath = resolvePath(basePath + "/" + relativePath);
 
 		const files = readdirSync(fullPath);
 		const result = [];
@@ -107,7 +109,21 @@ export class Loader {
 		searchPattern: RegExp = new RegExp("^.*(\.yml|\.yaml)$"), ignorePattern: RegExp = null
 	) {
 
-		const files = this.resolveDirectory(basePath, path, searchPattern, ignorePattern);
+		let files;
+
+		try {
+
+			files = this.resolveDirectory(basePath, path, searchPattern, ignorePattern);
+
+		} catch (err) {
+
+			if (err.code === "ENOENT")
+				throw new TestsDirectoryNotFoundError(basePath + "/" + path);
+			else
+				throw err;
+
+		}
+
 		const jobs = [];
 
 		for (let i = 0; i < files.length; i++)
