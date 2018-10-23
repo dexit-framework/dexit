@@ -2,9 +2,14 @@
   "name": "dexit",
   "version": "0.1.0",
   "description": "Declarative Extensible Framework for Integration Tests",
-  "main": "index.js",
+  "main": "dist/src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "rm -rf ./dist; tsc",
+    "start": "node ./dist/src/index.js",
+    "start-dev": "npm run build; node ./dist/src/index.js",
+    "lint": "tslint -c tslint.json 'src/**/*.{ts,tsx}' '__tests__/**/*.{ts,tsx}'",
+    "test": "jest",
+    "pretest": "npm run lint; npm run build"
   },
   "repository": {
     "type": "git",
@@ -24,5 +29,22 @@
   "bugs": {
     "url": "https://github.com/jirihybek/dexit/issues"
   },
-  "homepage": "https://github.com/jirihybek/dexit#readme"
+  "homepage": "https://github.com/jirihybek/dexit#readme",
+  "devDependencies": {
+    "@types/jest": "^23.3.5",
+    "@types/js-yaml": "^3.11.2",
+    "@types/jsonpath": "^0.2.0",
+    "@types/node": "^10.11.7",
+    "jest": "^23.6.0",
+    "jest-cli": "^23.6.0",
+    "tslint": "^5.11.0",
+    "typescript": "^3.1.3"
+  },
+  "dependencies": {
+    "ajv": "^6.5.4",
+    "colors": "^1.3.2",
+    "deepmerge": "^2.2.1",
+    "js-yaml": "^3.12.0",
+    "jsonpath": "^1.0.0"
+  }
 }

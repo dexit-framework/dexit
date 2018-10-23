@@ -1,0 +1,8 @@
+name: complex.api
+description: Application server API
+tags:
+  - config
+  - api
+params:
+  apiPrefix: https://api.myapp.tld
+skip: true

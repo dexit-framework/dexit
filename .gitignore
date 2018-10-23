@@ -28,3 +28,6 @@ sandbox
 
 # Compiled sources
 /dist
+
+# VS Code
+.vscode

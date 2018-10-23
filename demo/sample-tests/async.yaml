@@ -1,0 +1,44 @@
+name: async
+tests:
+  # ----------------------------------------------------------------
+  - description: Async Tasks Test
+  # ----------------------------------------------------------------
+    params:
+      value: false
+    tasks:
+      - do: js.eval
+        id: regular
+        description: "Should run 3rd and be resolved 1st"
+        args:
+          script: |
+            console.log("Regular execution.")
+        expect:
+          value: ${value}
+          code: 'value === false'
+
+      - do: js.eval
+        id: async1
+        runBeforeAsync: regular
+        description: "Should run 2nd and be resolved 2nd"
+        args:
+          script: |
+            console.log("Async execution.")
+            return new Promise(function(resolve){
+              setTimeout(function(){
+                resolve({ value: true })
+              }, 1000);
+            });
+        set:
+          value: ${value}
+
+      - do: js.eval
+        id: async2
+        runBeforeAsync: async1
+        description: "Should run 1s and be resolved 3rd"
+
+      - do: js.eval
+        id: final
+        description: "Should run and be resovled 4th"
+        expect:
+          value: ${value}
+          code: 'value === true'
