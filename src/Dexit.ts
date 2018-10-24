@@ -14,8 +14,8 @@ import { Repository } from "./Repository";
 import { Runner } from "./Runner";
 import { Tools } from "./Tools";
 
-import * as builtinModules from "./modules";
-import * as builtinReporters from "./reporters";
+import { BUILTIN_MODULES } from "./modules";
+import { BUILTIN_REPORTERS } from "./reporters";
 
 /**
  * Dexit configuration interface
@@ -93,8 +93,8 @@ export class Dexit {
 		// Load builtin modules
 		if (this.opts.loadBuiltInModules) {
 
-			this.moduleMgr.register(builtinModules.HttpModule);
-			this.moduleMgr.register(builtinModules.JsModule);
+			for (let i = 0; i < BUILTIN_MODULES.length; i++)
+				this.moduleMgr.register(BUILTIN_MODULES[i]);
 
 		}
 
@@ -107,8 +107,8 @@ export class Dexit {
 
 			const reporterConfig = this.opts.reporters[i];
 
-			if (i === "console")
-				this.reporterMgr.register(new builtinReporters.ConsoleReporter(reporterConfig));
+			if (BUILTIN_REPORTERS[i] !== undefined)
+				this.reporterMgr.register(new BUILTIN_REPORTERS[i](reporterConfig));
 			else
 				this.reporterMgr.loadNodeModule(resolvePath(this.opts.modulesPath + "/" + this.opts.reporters[i]), reporterConfig);
 

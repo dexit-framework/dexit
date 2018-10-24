@@ -1,5 +1,5 @@
 {
-  "name": "dexit",
+  "name": "@dexit/dexit",
   "version": "0.1.0",
   "description": "Declarative Extensible Framework for Integration Testing",
   "main": "dist/src/index.js",

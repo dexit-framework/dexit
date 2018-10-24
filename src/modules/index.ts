@@ -5,5 +5,12 @@
  * @license Apache-2.0
  */
 
-export * from "./HttpModule";
+import { JsModule } from "./JsModule";
+
+// Export classes
 export * from "./JsModule";
+
+// Export module map
+export const BUILTIN_MODULES = [
+	JsModule
+];

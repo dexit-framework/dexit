@@ -2,24 +2,158 @@
 
 Declarative Extensible Integration Testing framework.
 
-**--- In development ---**
+The Dexit aims to create a framework for integration testing of complex applications which consist of various services such as API servers, databases, pub/sub systems and so on. The Dexit allows you to easily test these services altogether.
 
-Goal of this project is to create a framework for running and writing integrations tests of various services in a declarative-fasion.
+**Why declarative approach instead of programming?**
 
-The Dexit framework will provide modules to test various services such as APIs and databases. It will be possible to combine this modules in a single test.
+- Because most of the integrations tests are about requesting or querying some service and then checking its response.
+- A declarative approach using YAML files is more understandable even for non-programmers.
+- For some people seems to be more readable.
+- Easy inheritance of configuration and parameters.
 
-## Why?
+## Usage
 
-Because complex applications which consist of multiple services such as application servers, databases or brokers must be tested as a single system.
+### Stand-alone Project
 
-## Buil-in Modules
+```bash
+cd your_project_dir
+
+# Create folder for tests
+mkdir -p ./tests
+
+# Create a new Node.JS module
+npm init
+
+# Install Dexit
+npm install --save @dexit/dexit
+
+# Install additional modules (currently not working)
+# npm install --save @dexit/module-http
+# npm install --save @dexit/module-mqtt
+# npm install --save @dexit/reporter-junit
+
+# Customize Dexit configuration using package.json
+nano package.json
+
+# Run tests
+./node_modules/.bin/dexit
+
+# Or if you install dexit globally
+dexit
+
+# Or if you add npm script as shown below...
+npm run test
+```
+
+### As a Part of an Existing Node.JS Project
+
+```bash
+cd your_project_dir
+
+# Create folder for tests
+mkdir -p ./tests
+
+# Install Dexit
+npm install --save @dexit/dexit
+
+# Install additional modules (currently not working)
+# npm install --save @dexit/module-http
+# npm install --save @dexit/module-mqtt
+# npm install --save @dexit/reporter-junit
+
+# Customize Dexit configuration using package.json
+nano package.json
+
+# Run tests
+./node_modules/.bin/dexit
+
+# Or if you install dexit globally
+dexit
+
+# Or if you add npm script as shown below...
+npm run test
+```
+
+### Configuration
+
+Configuration can be done via `package.json` file or using command line arguments.
+
+For command line arguments run `dexit -h` or `./node_modules/.bin/dexit -h`.
+
+**Example configuration with default values using package.json file:**
+
+```json
+{
+  "name": "demo",
+  "version": "1.0.0",
+  "scripts": {
+    "test": "./node_modules/.bin/dexit -h"
+  },
+  "dependencies": {
+    "@dexit/dexit": "*"
+  },
+  "dexit": {
+    "reporters": {
+      "console": {
+        "detailed": false,
+        "reportValidTasks": false,
+        "reportArgs": false
+      }
+    },
+    "ignoreInvalidTests": true,
+    "loadBuiltInModules": true,
+    "autoloadModules": true,
+    "testsPath": "./tests",
+    "modulesPath": "./node_modules"
+  }
+}
+```
+
+**Example of CLI Help:**
+
+```
+usage: dexit [-h] [-v] [--base-path BASEPATH] [--modules-path MODULESPATH]
+              [--no-autoload] [--no-builtin] [--ignore-invalid]
+              [--reporter [module_name [module_name ...]]] [--debug]
+              [--generate-schema schema_filename]
+              [testsPath [testsPath ...]]
+
+DEXIT v0.1.0 (Declarative Extensible Integration Testing)
+
+Positional arguments:
+  testsPath             Tests directory path
+
+Optional arguments:
+  -h, --help            Show this help message and exit.
+  -v, --version         Show program's version number and exit.
+  --base-path BASEPATH  Base project path
+  --modules-path MODULESPATH
+                        Node modules path
+  --no-autoload         Disable autoloading of modules
+  --no-builtin          Disable autoloading of built-in modules
+  --ignore-invalid      Ignore invalid test files
+  --reporter [module_name [module_name ...]]
+                        Use reporter (default: console)
+  --debug               Print bootstrap debug messages
+  --generate-schema schema_filename
+                        Generate JSON schema for test files including all
+                        loaded modules definitions. Can be used for linters
+                        or language servers to enable intellisense. No tests
+                        will be run when this option is set.
+```
+
+## Built-in Testing Modules
+
+- JavaScript code execution
+
+## Built-in Reporters
+
+- Console
+
+## Planned Official Modules
 
 - REST API (as HTTP)
-- JavaScript code execution
 - Shell commands execution
-
-## Planned Modules
-
 - MySQL
 - PostgreSQL
 - InfluxDB
@@ -27,158 +161,34 @@ Because complex applications which consist of multiple services such as applicat
 - RabbitMQ
 - Redis
 
-## Example Tests
+## Planned Official Reporters
 
-```yaml
-# test/api/main.yaml
-name: api
-description: Application server API
-tags:
-  - config
-  - api
-params:
-  apiPrefix: https://api.myapp.tld
----
-# test/api/auth.yaml
-name: api.auth
-description: Tests the authorization process
-tags:
-  - auth
-params:
-  validUsername: test
-  validPassword: test
-tests:
-  # ----------------------------------------------------------------
-  - description: Try to log in with valid credentials
-  # ----------------------------------------------------------------
-    tasks:
-      - module: http.post
-        url: ${apiPrefix}/login
-        body:
-          jsonData:
-            username: ${validUsername}
-            password: ${validPassword}
-        expect:
-          code: 200
-          body:
-            jsonSchema:
-              type: object
-              required:
-              - token
-              properties:
-                token:
-                  type: string
-          set:
-            authToken: $.token
+- JUnit
+- JSON
+- HTML
 
-      - module: http.get
-        url: ${apiPrefix}/user
-        auth:
-          bearer: ${token}
-        expect:
-          code: 200
-          body:
-            jsonSchema:
-              type: object
-              required:
-              - username
-              properties:
-                username:
-                  type: string
+## Documentation
 
-      - module: redis
-        command: HGET online_users test
-        expect:
-          result:
-            - "1"
+Will be published soon.
 
-  # ---------------------------------------------------------------- 
-  - description: Try to log in with invalid credentials
-  # ----------------------------------------------------------------
-    tasks:
-      - module: postgresql.query
-        query: "SELECT invalid_logins FROM `users` WHERE `username` = 'test'"
-        expect:
-          rowCount: 1
-        set:
-          invalid_logins: $.rows[0].invalid_logins
+## IntelliSense for VS Code
 
-      - module: http.post
-        url: ${apiPrefix}/login
-        body:
-          jsonData:
-            username: testxxx
-            password: testxxx
-        expect:
-          code: 404
+In Visual Studio Code, you can enable IntelliSense features for your test files as follows.
 
-      - module: http.get
-        url: ${apiPrefix}/user
-        auth:
-          bearer: ${token}
-        expect:
-          code: 401
-
-      - module: postgresql.query
-        query: "SELECT invalid_logins FROM `users` WHERE `username` = 'test'"
-        expect:
-          rows:
-            - invalid_logins: ">= ${invalid_logins}"
----
-# test/mqtt/main.yaml
-name: mqtt
-description: MQTT broker test
-tags:
-  - broker
-  - mqtt
-params:
-  brokerUrl: mqtts://broker.myapp.tld
-  rabbitUrl: amqp://localhost
----
-# test/mqtt/pubsub.yaml
-name: mqtt.pubsub
-description: Tests the pub sub functionality
-tests:
-  # ----------------------------------------------------------------
-  - description: Try to publish message and check if was delivered into RabbitMQ
-  # ----------------------------------------------------------------
-    tasks:
-      - module: mqtt.publish
-        id: mqtt-publish
-        url: ${brokerUrl}
-        topic: test
-        payload: Hello world!
-      
-      - module: rabbitmq.subscribe
-        runBeforeAndWait: mqtt-publish
-        url: ${rabbitUrl}
-        exchange: amq.topic
-        routingKey: test
-        expect:
-          payload: Hello world!
-          headers:
-            x-my-header: from-broker
-
-  # ----------------------------------------------------------------
-  - description: Try to subscribe for a message
-  # ----------------------------------------------------------------
-    tasks:
-      - module: rabbitmq.publish
-        id: amq-publish
-        url: ${rabbitUrl}
-        exchange: amq.topic
-        routingKey: test
-        payload: Hello world!
-      
-      - module: mqtt.subscribe
-        runBeforeAndWait: amq-publish
-        url: ${brokerUrl}
-        topic: test
-        expect:
-          payload: Hello world!
+1. Install [YAML Support by Red Hat](https://marketplace.visualstudio.com/items?itemName=redhat.vscode-yaml) extension
+2. Generate JSON schema file for your project using `./node_modules/.bin/dexit --generate-schema ./schema.json`
+3. Create a new workspace for your project (or use absolute path starting with `file://` in step 4)
+4. Add following properties to your workspace configuration:
+```json
+"settings": {
+  "yaml.schemas": {
+    "./schema.json": "tests/***.yaml"
+  }
+}
 ```
+5. Enjoy
 
-# License Apache 2.0
+## License Apache 2.0
 
 Copyright 2018 Jiri Hybek <jiri@hybek.cz>
 
